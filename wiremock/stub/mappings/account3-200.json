@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/accounts/78905115"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "iban": "NL24INGB7890511509",
+      "ownerId": "d23e3d46-aa6d-4dbd-93c1-5f7e95f0334d"
+    }
+  }
+}

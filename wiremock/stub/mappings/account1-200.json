@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/accounts/77853449"
+  },
+  "response": {
+    "fixedDelayMilliseconds": 1000,
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "iban": "NL24INGB7785344909",
+      "ownerId": "c3629d83-95f7-4966-9b67-76b13fe2cd5a"
+    }
+  }
+}
