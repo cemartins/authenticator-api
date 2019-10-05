@@ -1,14 +1,13 @@
 package com.assessment.authentication.jwt;
 
 import io.jsonwebtoken.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import sun.security.util.SecurityConstants;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -38,7 +37,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(JwtConstants.TOKEN_HEADER);
-        if (StringUtils.isNotEmpty(token) && token.startsWith(JwtConstants.TOKEN_PREFIX)) {
+        if ( !StringUtils.isEmpty(token) && token.startsWith(JwtConstants.TOKEN_PREFIX)) {
             try {
                 byte[] signingKey = JwtConstants.JWT_SECRET.getBytes();
 
@@ -55,7 +54,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .map(authority -> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
-                if (StringUtils.isNotEmpty(username)) {
+                if ( !StringUtils.isEmpty(username)) {
                     return new UsernamePasswordAuthenticationToken(username, null, authorities);
                 }
             } catch (ExpiredJwtException exception) {
