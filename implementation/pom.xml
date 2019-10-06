@@ -16,7 +16,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
         <versions.maven.plugin.version>2.5</versions.maven.plugin.version>
-        <swagger.version>2.6.1</swagger.version>
+        <swagger.version>2.9.2</swagger.version>
+        <jjwt.version>0.10.7</jjwt.version>
         <java.release>8</java.release>
     </properties>
 
@@ -34,18 +35,18 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.10.5</version>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.10.5</version>
+            <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.10.5</version>
+            <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -99,45 +100,6 @@
                 <configuration>
                     <argLine>--illegal-access=permit</argLine>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <version>3.1.8</version>
-                <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <springmvc>true</springmvc>
-                            <locations>
-                                <location>com.assessment.authentication.api</location>
-                            </locations>
-                            <schemes>https</schemes>
-                            <host>localhost</host>
-                            <basePath>/api/doc</basePath>
-                            <info>
-                                <title>Authentication API</title>
-                                <version>${project.version}</version>
-                                <description>Assessment challenge</description>
-                                <contact>
-                                    <name>Carlos</name>
-                                    <email>cemartins@netcabo.pt</email>
-                                    <url>https://www.linkedin.com/in/cemartins</url>
-                                </contact>
-                            </info>
-                            <swaggerDirectory>${project.build.directory}</swaggerDirectory>
-                        </apiSource>
-                    </apiSources>
-                </configuration>
-                <!--
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                -->
             </plugin>
         </plugins>
     </build>

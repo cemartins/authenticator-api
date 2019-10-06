@@ -8,10 +8,6 @@ server:
 security:
   signing-key: MaYzkSjmkzPC57L
   security-realm: Authentication API Realm
-  jwt:
-    client-id: testjwtclientid
-    client-secret: XY7kmzoNzl100
-    grant-type: password
-    scope-read: read
-    scope-write: write
-    resource-ids: testjwtresourceid
+
+jwt:
+  secret: 4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n
