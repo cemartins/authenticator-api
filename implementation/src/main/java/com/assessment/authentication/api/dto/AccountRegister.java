@@ -3,6 +3,8 @@ package com.assessment.authentication.api.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @ApiModel(description = "Account Details.")
@@ -14,6 +16,7 @@ public class AccountRegister implements Serializable {
     private String username;
 
     @ApiModelProperty(notes = "Password Name")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
     @ApiModelProperty(notes = "Account Number")
