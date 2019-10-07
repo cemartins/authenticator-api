@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 @ApiModel(description = "Login Creadentials.")
-public class JwtRequest implements Serializable {
+public class AuthenticationRequest implements Serializable {
 
     private static final long serialVersionUID = 2397211209827369265L;
 
@@ -16,11 +16,11 @@ public class JwtRequest implements Serializable {
     @ApiModelProperty(notes = "Password Name")
     private String password;
 
-    public JwtRequest() {
+    public AuthenticationRequest() {
 
     }
 
-    public JwtRequest(String username, String password) {
+    public AuthenticationRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }

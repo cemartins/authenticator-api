@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "Account Details")
-public class AccountResponse {
+public class AccountDetails {
 
     @ApiModelProperty(notes = "Account Number")
     private Integer account;

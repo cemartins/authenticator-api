@@ -1,7 +1,6 @@
 package com.assessment.authentication.api;
 
-import com.assessment.authentication.api.dto.JwtRequest;
-import com.assessment.authentication.api.dto.JwtResponse;
+import com.assessment.authentication.api.dto.AuthenticationRequest;
 import com.assessment.authentication.jwt.JwtTokenProcessor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * Controller used to authenticate an API user.
+ */
 @Api(value="Authentication")
 @RestController
 public class AuthenticationController {
@@ -36,14 +38,19 @@ public class AuthenticationController {
     private UserDetailsService jwtUserDetailsService;
 
 
+    /**
+     * Tried to authenticate a previously registered API user.
+     * @param authenticationRequest
+     * @return Returns the user's JWT token if successful
+     * @throws Exception
+     */
     @ApiOperation("Autheticate a user")
     @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtResponse> createAuthenticationToken(@ApiParam(value = "Employee object store in database table", required = true) @Valid @RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<String> createAuthenticationToken(@ApiParam(value = "Employee object store in database table", required = true) @Valid @RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         final Authentication authentication = authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenProcessor.generateToken(userDetails);
-        final JwtResponse jwtResponse = new JwtResponse(token);
-        return ResponseEntity.ok(jwtResponse);
+        return ResponseEntity.ok(token);
     }
 
     private Authentication authenticate(String username, String password) throws Exception {

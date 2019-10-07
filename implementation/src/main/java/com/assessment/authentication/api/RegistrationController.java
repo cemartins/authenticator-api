@@ -1,7 +1,7 @@
 package com.assessment.authentication.api;
 
 import com.assessment.authentication.api.dto.AccountRegister;
-import com.assessment.authentication.api.dto.AccountResponse;
+import com.assessment.authentication.api.dto.AccountDetails;
 import com.assessment.authentication.jwt.JwtUserDetailsService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +33,10 @@ public class RegistrationController {
 
     @ApiOperation("Get a specific banking account")
     @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getAccount(Integer id) {
+    public ResponseEntity<AccountDetails> getAccount(Integer id) {
 
         final User user = userDetailsService.loadUserByAccountNumber(id);
-        AccountResponse ar = new AccountResponse();
+        AccountDetails ar = new AccountDetails();
         ar.setAccount(id);
         return ResponseEntity.ok(ar);
     }
