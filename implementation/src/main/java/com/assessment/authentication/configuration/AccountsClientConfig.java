@@ -55,17 +55,21 @@ public class AccountsClientConfig {
             InputStream trustInputStream = this.getClass().getResourceAsStream(truststorePath);
             trustStore.load(trustInputStream, truststorePassword.toCharArray());
 
-            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(new SSLContextBuilder()
-            .loadTrustMaterial(trustStore, new TrustAllStrategy())
-            .loadKeyMaterial(keyStore, keystorePassword.toCharArray())
-            .build());
+            SSLContextBuilder contextBuilder = new SSLContextBuilder();
+            contextBuilder.setProtocol("TLS");
+            contextBuilder.loadKeyMaterial(keyStore, keystorePassword.toCharArray());
+            contextBuilder.setKeyStoreType(keystoreType);
+            contextBuilder.loadTrustMaterial(trustStore, new TrustAllStrategy());
+
+            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(contextBuilder.build());
 
             final CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
 
             requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+            requestFactory.setConnectTimeout(10000); // 10 seconds
+            requestFactory.setReadTimeout(10000); // 10 seconds
 
             restTemplate.setRequestFactory(requestFactory);
-
 
         } catch (KeyStoreException e) {
             throw new BeanInitializationException("Cannot instantiate keystore", e);

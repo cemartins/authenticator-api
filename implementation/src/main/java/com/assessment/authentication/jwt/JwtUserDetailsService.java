@@ -34,8 +34,8 @@ public class JwtUserDetailsService implements UserDetailsService {
         return apiUser.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
-    public User loadUserByAccountNumber(Integer account) {
-        return userRegistry.get(account);
+    public User loadUserByAccountNumber(String iban) {
+        return userRegistry.get(iban);
     }
 
     /**
