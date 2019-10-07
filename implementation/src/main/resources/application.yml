@@ -3,17 +3,7 @@ spring:
     name: authentication-api
 ---
 server:
-  port: 8444
-  ssl:
-    enabled: true
-    client-auth: need
-    key-store: classpath:security/server-keystore.jks
-    key-store-type: JCEKS
-    key-store-password: changeit
-    key-alias: authentication-api
-    trust-store: classpath:security/server-truststore.jks
-    trust-store-type: JCEKS
-    trust-store-password: changeit
+  port: 8090
 
 jwt:
   secret: 4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n

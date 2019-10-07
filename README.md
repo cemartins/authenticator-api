@@ -1,6 +1,13 @@
 # authenticator-api
 
+Swagger file
+------------
+
+http://localhost:8090/v2/api-docs
+
+
 References
+----------
 
 - JWT https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
 - JWT https://dev.to/keysh/spring-security-with-jwt-3j76
