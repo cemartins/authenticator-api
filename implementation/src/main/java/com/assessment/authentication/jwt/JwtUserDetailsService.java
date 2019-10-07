@@ -23,7 +23,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder bcryptEncoder;
 
-    private Map<Integer, User> userRegistry = new HashMap<>();
+    private Map<String, User> userRegistry = new HashMap<>();
     private Map<String, Integer> consecutiveUserFailures = new HashMap<>();
 
     @Override
@@ -38,12 +38,22 @@ public class JwtUserDetailsService implements UserDetailsService {
         return userRegistry.get(account);
     }
 
-    public void storeUser(Integer account, String username, String password) {
+    /**
+     * Stores a new user in the memory map
+     * @param iban iban of the user
+     * @param username user name
+     * @param password password
+     */
+    public void storeUser(String iban, String username, String password) {
         final String encodedPassword = bcryptEncoder.encode(password);
         final User user = new User(username, encodedPassword, new ArrayList<>());
-        userRegistry.put(account, user);
+        userRegistry.put(iban, user);
     }
 
+    /**
+     * A user failed to authenticate
+     * @param username
+     */
     public void reportLoginFailure(String username) {
 
         LOG.debug("Authentication failed for " + username);
@@ -61,6 +71,10 @@ public class JwtUserDetailsService implements UserDetailsService {
         }
     }
 
+    /**
+     * A user authenticated successfuly
+     * @param username
+     */
     public void reportLoginSuccess(String username) {
         LOG.info("Authentication successful for " + username);
         consecutiveUserFailures.put(username, 0);

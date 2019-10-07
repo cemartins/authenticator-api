@@ -19,3 +19,6 @@ server:
 
 jwt:
   secret: 4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n
+
+accounts-api:
+  url-accounts: https://localhost:8444/accounts

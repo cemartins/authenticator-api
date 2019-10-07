@@ -3,8 +3,12 @@ package com.assessment.authentication.api.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
+
 @ApiModel(description = "Account Details")
-public class AccountDetails {
+public class AccountDetails implements Serializable {
+
+    public static final long serialVersionUID = -2204464442661579554L;
 
     @ApiModelProperty(notes = "Account Number")
     private Integer account;
