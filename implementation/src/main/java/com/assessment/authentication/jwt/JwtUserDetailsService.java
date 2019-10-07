@@ -1,5 +1,7 @@
 package com.assessment.authentication.jwt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +18,13 @@ import java.util.Optional;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JwtUserDetailsService.class);
+
     @Autowired
     private PasswordEncoder bcryptEncoder;
 
     private Map<Integer, User> userRegistry = new HashMap<>();
+    private Map<String, Integer> consecutiveUserFailures = new HashMap<>();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -37,6 +42,28 @@ public class JwtUserDetailsService implements UserDetailsService {
         final String encodedPassword = bcryptEncoder.encode(password);
         final User user = new User(username, encodedPassword, new ArrayList<>());
         userRegistry.put(account, user);
+    }
+
+    public void reportLoginFailure(String username) {
+
+        LOG.debug("Authentication failed for " + username);
+        Integer failures = consecutiveUserFailures.get(username);
+        if(failures == null) {
+            failures = 0;
+        }
+        else {
+            failures = failures + 1;
+        }
+        consecutiveUserFailures.put(username, failures);
+        if(failures == 3) {
+            final Optional<User> apiUser = userRegistry.values().stream().filter(u -> u.getUsername().equals(username)).findFirst();
+            LOG.info("Authentication failed max times for " + username + ". User is blocked");
+        }
+    }
+
+    public void reportLoginSuccess(String username) {
+        LOG.info("Authentication successful for " + username);
+        consecutiveUserFailures.put(username, 0);
     }
 
 }

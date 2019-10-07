@@ -1,10 +1,12 @@
 package com.assessment.authentication.api;
 
+import com.assessment.authentication.configuration.SecurityConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Run a sequence of requests
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest()
+@Import(SecurityConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ApiIntegrationTest {
 
     private MockMvc mockMvc;
@@ -40,7 +43,7 @@ public class ApiIntegrationTest {
     public void givenAccount_whenSequenceRequests_thenReturnOk() throws Exception {
 
         // Register an account
-        mockMvc.perform(post("/accounts/register")
+        mockMvc.perform(post("/register")
                 .content("{" +
                         "\"username\": \"mememe\"," +
                         "\"password\": \"password\"," +
@@ -48,6 +51,11 @@ public class ApiIntegrationTest {
                         "}")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        // Unauthenticated user calls API without token to see account details
+        mockMvc.perform(get("/accounts/77853449")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
 
         // Authenticate the user previously registered
         final MvcResult authenticationResult = mockMvc.perform(post("/authenticate")
