@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-public class ApiControllersTest {
+public class ApiIntegrationTest {
 
     private MockMvc mockMvc;
 
@@ -59,13 +58,6 @@ public class ApiControllersTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-
-
-        // Authenticated user calls API without token to see account details
-        mockMvc.perform(get("/accounts/77853449")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
-
 
         String token = authenticationResult.getResponse().getContentAsString();
         assert token != null && !token.isEmpty();

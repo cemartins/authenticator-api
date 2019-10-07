@@ -7,6 +7,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class RegistrationController {
 
     @ApiOperation("Get a specific banking account")
     @GetMapping("/{id}")
+    @Secured("ROLE_USER")
     public ResponseEntity<AccountDetails> getAccount(Integer id) {
 
         final User user = userDetailsService.loadUserByAccountNumber(id);
