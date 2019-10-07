@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-@ApiModel(description = "Account Details.")
+@ApiModel(description = "Account Registration")
 public class AccountRegister implements Serializable {
 
     private static final long serialVersionUID = 6546936552005481434L;

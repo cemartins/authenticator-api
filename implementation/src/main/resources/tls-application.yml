@@ -15,9 +15,5 @@ server:
     trust-store-type: JCEKS
     trust-store-password: changeit
 
-security:
-  signing-key: MaYzkSjmkzPC57L
-  security-realm: Authentication API Realm
-
 jwt:
   secret: 4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: authentication-api
+    name: authentication-api-test
 ---
 server:
   port: 8090

@@ -1,11 +1,13 @@
 package com.assessment.authentication.api;
 
 import com.assessment.authentication.api.dto.AccountRegister;
+import com.assessment.authentication.api.dto.AccountResponse;
 import com.assessment.authentication.jwt.JwtUserDetailsService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,8 +33,12 @@ public class RegistrationController {
 
     @ApiOperation("Get a specific banking account")
     @GetMapping("/{id}")
-    public String getAccount(Integer id) {
-        return "Authentication API says Hello " + id;
+    public ResponseEntity<AccountResponse> getAccount(Integer id) {
+
+        final User user = userDetailsService.loadUserByAccountNumber(id);
+        AccountResponse ar = new AccountResponse();
+        ar.setAccount(id);
+        return ResponseEntity.ok(ar);
     }
 
 }
