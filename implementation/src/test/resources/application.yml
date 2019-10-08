@@ -4,19 +4,13 @@ spring:
 ---
 server:
   port: 8090
-  ssl:
-    enabled: false
-    client-auth: need
-    key-store: classpath:security/server-keystore.jks
-    key-store-type: JCEKS
-    key-store-password: changeit
-    key-alias: authentication-api
-    trust-store: classpath:security/server-truststore.jks
-    trust-store-type: JCEKS
-    trust-store-password: changeit
 
 jwt:
   secret: 4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n4ut3nt1c4t10n
 
 accounts-api:
   url-accounts: https://localhost:8444/accounts
+  key-store: classpath:security/client-keystore.jks
+  key-store-password: changeit
+  trust-store: classpath:security/client-truststore.jks
+  trust-store-password: changeit

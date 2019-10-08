@@ -1,107 +1,63 @@
 package com.assessment.authentication.configuration;
 
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.SSLContext;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.*;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
 @Configuration
 public class AccountsClientConfig {
 
-    @Value("${server.ssl.key-store}")
+    @Value("${accounts-api.key-store}")
     private String keystorePath;
 
-    @Value("${server.ssl.key-store-type}")
-    private String keystoreType;
-
-    @Value("${server.ssl.key-store-password}")
+    @Value("${accounts-api.key-store-password}")
     private String keystorePassword;
 
-    @Value("${server.ssl.trust-store}")
+    @Value("${accounts-api.trust-store}")
     private String truststorePath;
 
-    @Value("${server.ssl.trust-store-type}")
-    private String truststoreType;
-
-    @Value("${server.ssl.trust-store-password}")
+    @Value("${accounts-api.trust-store-password}")
     private String truststorePassword;
 
     @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
+    public RestTemplate restTemplate() throws IOException, UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException,
+            KeyStoreException, KeyManagementException {
 
-        KeyStore keyStore;
-        KeyStore trustStore;
-        HttpComponentsClientHttpRequestFactory requestFactory = null;
+        final File keystoreFile = ResourceUtils.getFile(keystorePath);
+        final File truststoreFile = ResourceUtils.getFile(truststorePath);
 
-        try {
-            keyStore = KeyStore.getInstance(keystoreType);
-            InputStream inputStream = this.getClass().getResourceAsStream(keystorePath);
-            keyStore.load(inputStream, keystorePassword.toCharArray());
+        SSLContext sslContext = SSLContextBuilder
+                .create()
+                .loadKeyMaterial(keystoreFile, keystorePassword.toCharArray(), keystorePassword.toCharArray())
+                .loadTrustMaterial(truststoreFile, truststorePassword.toCharArray())
+                .build();
 
-            trustStore = KeyStore.getInstance(truststoreType);
-            InputStream trustInputStream = this.getClass().getResourceAsStream(truststorePath);
-            trustStore.load(trustInputStream, truststorePassword.toCharArray());
+        CloseableHttpClient client = HttpClients.custom()
+                .setSSLContext(sslContext)
+                .build();
 
-            SSLContextBuilder contextBuilder = new SSLContextBuilder();
-            contextBuilder.setProtocol("TLS");
-            contextBuilder.loadKeyMaterial(keyStore, keystorePassword.toCharArray());
-            contextBuilder.setKeyStoreType(keystoreType);
-            contextBuilder.loadTrustMaterial(trustStore, new TrustAllStrategy());
+        HttpComponentsClientHttpRequestFactory requestFactory =
+                new HttpComponentsClientHttpRequestFactory();
 
-            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(contextBuilder.build(),
-                    new String[] { "TLSv1.2" },
-                    null,
-                    SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+        requestFactory.setHttpClient(client);
 
-            final Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                    .register("https", socketFactory)
-                    .build();
-
-            final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(registry);
-            connectionManager.setMaxTotal(10);
-            connectionManager.setDefaultMaxPerRoute(10);
-
-            final CloseableHttpClient httpClient = HttpClients.custom()
-                    .setSSLSocketFactory(socketFactory)
-                    .setConnectionManager(connectionManager)
-                    .build();
-
-            requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
-            requestFactory.setConnectTimeout(10000); // 10 seconds
-            requestFactory.setReadTimeout(10000);
-
-            restTemplate.setRequestFactory(requestFactory);
-
-        } catch (KeyStoreException e) {
-            throw new BeanInitializationException("Cannot instantiate keystore", e);
-        } catch (IOException e) {
-            throw new BeanInitializationException("Cannot read keystore path", e);
-        } catch (CertificateException | NoSuchAlgorithmException e) {
-            throw new BeanInitializationException("Cannot load keystore", e);
-        } catch (UnrecoverableKeyException | KeyManagementException e) {
-            throw new BeanInitializationException("Cannot create socket factory", e);
-        }
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
 
         return restTemplate;
     }
-
 }
