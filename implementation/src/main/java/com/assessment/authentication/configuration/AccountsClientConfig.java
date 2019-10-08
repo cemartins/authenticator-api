@@ -1,9 +1,14 @@
 package com.assessment.authentication.configuration;
 
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,13 +66,28 @@ public class AccountsClientConfig {
             contextBuilder.setKeyStoreType(keystoreType);
             contextBuilder.loadTrustMaterial(trustStore, new TrustAllStrategy());
 
-            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(contextBuilder.build());
+            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(contextBuilder.build(),
+                    new String[] { "TLSv1.2" },
+                    null,
+                    SSLConnectionSocketFactory.getDefaultHostnameVerifier());
 
-            final CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
+            final Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                    .register("https", socketFactory)
+                    .build();
+
+            final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(registry);
+            connectionManager.setMaxTotal(10);
+            connectionManager.setDefaultMaxPerRoute(10);
+
+            final CloseableHttpClient httpClient = HttpClients.custom()
+                    .setSSLSocketFactory(socketFactory)
+                    .setConnectionManager(connectionManager)
+                    .build();
 
             requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
             requestFactory.setConnectTimeout(10000); // 10 seconds
-            requestFactory.setReadTimeout(10000); // 10 seconds
+            requestFactory.setReadTimeout(10000);
 
             restTemplate.setRequestFactory(requestFactory);
 
